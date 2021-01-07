@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="46143af5a87748548f72489cd7a983a5" Name="Diagram1">
+        <EntityTypeShape EntityType="FinanceModel.Admin" Width="1.5" PointX="0.5" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinanceModel.Bank" Width="1.5" PointX="2.625" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinanceModel.Card" Width="1.5" PointX="0.5" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinanceModel.CompanyCard" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinanceModel.Consumer" Width="1.5" PointX="4.875" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinanceModel.EMI" Width="1.5" PointX="4.875" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinanceModel.Product" Width="1.5" PointX="8.625" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinanceModel.sysdiagram" Width="1.5" PointX="6.75" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FinanceModel.Transaction" Width="1.5" PointX="7.125" PointY="1.25" IsExpanded="true" />
+        <AssociationConnector Association="FinanceModel.FK_Consumer_Bank" ManuallyRouted="false" />
+        <AssociationConnector Association="FinanceModel.FK_CompanyCard_Card" ManuallyRouted="false" />
+        <AssociationConnector Association="FinanceModel.FK_Consumer_Card" ManuallyRouted="false" />
+        <AssociationConnector Association="FinanceModel.FK_CompanyCard_Consumer" ManuallyRouted="false" />
+        <AssociationConnector Association="FinanceModel.FK_Transaction_Consumer" ManuallyRouted="false" />
+        <AssociationConnector Association="FinanceModel.FK_Transaction_EMI" ManuallyRouted="false" />
+        <AssociationConnector Association="FinanceModel.FK_Transaction_Product" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

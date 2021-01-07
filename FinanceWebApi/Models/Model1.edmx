@@ -1,0 +1,572 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="FinanceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Admin">
+          <Key>
+            <PropertyRef Name="AdminName" />
+          </Key>
+          <Property Name="AdminName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="varchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Bank">
+          <Key>
+            <PropertyRef Name="IFSC" />
+          </Key>
+          <Property Name="BankName" Type="varchar(max)" Nullable="false" />
+          <Property Name="IFSC" Type="varchar" MaxLength="11" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Card">
+          <Key>
+            <PropertyRef Name="CardTypeNo" />
+          </Key>
+          <Property Name="CardTypeNo" Type="varchar" MaxLength="16" Nullable="false" />
+          <Property Name="CardType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="JoiningFee" Type="money" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CompanyCard">
+          <Key>
+            <PropertyRef Name="CardNumber" />
+          </Key>
+          <Property Name="CardNumber" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Validity" Type="date" Nullable="false" />
+          <Property Name="CardTypeNo" Type="varchar" MaxLength="16" Nullable="false" />
+          <Property Name="Balance" Type="money" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Consumer">
+          <Key>
+            <PropertyRef Name="UserName" />
+          </Key>
+          <Property Name="UserName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="varchar(max)" Nullable="false" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Password" Type="varchar(max)" Nullable="false" />
+          <Property Name="AccountNo" Type="varchar" MaxLength="18" Nullable="false" />
+          <Property Name="IFSC" Type="varchar" MaxLength="11" Nullable="false" />
+          <Property Name="Address" Type="varchar(max)" Nullable="false" />
+          <Property Name="CardTypeNo" Type="varchar" MaxLength="16" Nullable="false" />
+          <Property Name="ApplicationDate" Type="date" Nullable="false" />
+          <Property Name="IsPending" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EMI">
+          <Key>
+            <PropertyRef Name="SchemeNo" />
+          </Key>
+          <Property Name="SchemeNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Months" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductID" />
+          </Key>
+          <Property Name="ProductID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductName" Type="varchar(max)" Nullable="false" />
+          <Property Name="ProductDetails" Type="varchar(max)" />
+          <Property Name="ProductCost" Type="money" Nullable="false" />
+          <Property Name="ProductAvailability" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Transaction">
+          <Key>
+            <PropertyRef Name="TransactionID" />
+          </Key>
+          <Property Name="TransactionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="SchemeNo" Type="int" Nullable="false" />
+          <Property Name="PurchaseDate" Type="date" Nullable="false" />
+          <Property Name="RemainingAmount" Type="money" Nullable="false" />
+          <Property Name="EMIAmount" Type="money" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_CompanyCard_Card">
+          <End Role="Card" Type="Self.Card" Multiplicity="1" />
+          <End Role="CompanyCard" Type="Self.CompanyCard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Card">
+              <PropertyRef Name="CardTypeNo" />
+            </Principal>
+            <Dependent Role="CompanyCard">
+              <PropertyRef Name="CardTypeNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CompanyCard_Consumer">
+          <End Role="Consumer" Type="Self.Consumer" Multiplicity="1" />
+          <End Role="CompanyCard" Type="Self.CompanyCard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consumer">
+              <PropertyRef Name="UserName" />
+            </Principal>
+            <Dependent Role="CompanyCard">
+              <PropertyRef Name="UserName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Consumer_Bank">
+          <End Role="Bank" Type="Self.Bank" Multiplicity="1" />
+          <End Role="Consumer" Type="Self.Consumer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bank">
+              <PropertyRef Name="IFSC" />
+            </Principal>
+            <Dependent Role="Consumer">
+              <PropertyRef Name="IFSC" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Consumer_Card">
+          <End Role="Card" Type="Self.Card" Multiplicity="1" />
+          <End Role="Consumer" Type="Self.Consumer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Card">
+              <PropertyRef Name="CardTypeNo" />
+            </Principal>
+            <Dependent Role="Consumer">
+              <PropertyRef Name="CardTypeNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_Consumer">
+          <End Role="Consumer" Type="Self.Consumer" Multiplicity="1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consumer">
+              <PropertyRef Name="UserName" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="UserName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_EMI">
+          <End Role="EMI" Type="Self.EMI" Multiplicity="1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMI">
+              <PropertyRef Name="SchemeNo" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="SchemeNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="FinanceModelStoreContainer">
+          <EntitySet Name="Admin" EntityType="Self.Admin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Bank" EntityType="Self.Bank" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Card" EntityType="Self.Card" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CompanyCard" EntityType="Self.CompanyCard" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Consumer" EntityType="Self.Consumer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EMI" EntityType="Self.EMI" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_CompanyCard_Card" Association="Self.FK_CompanyCard_Card">
+            <End Role="Card" EntitySet="Card" />
+            <End Role="CompanyCard" EntitySet="CompanyCard" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CompanyCard_Consumer" Association="Self.FK_CompanyCard_Consumer">
+            <End Role="Consumer" EntitySet="Consumer" />
+            <End Role="CompanyCard" EntitySet="CompanyCard" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Consumer_Bank" Association="Self.FK_Consumer_Bank">
+            <End Role="Bank" EntitySet="Bank" />
+            <End Role="Consumer" EntitySet="Consumer" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Consumer_Card" Association="Self.FK_Consumer_Card">
+            <End Role="Card" EntitySet="Card" />
+            <End Role="Consumer" EntitySet="Consumer" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_Consumer" Association="Self.FK_Transaction_Consumer">
+            <End Role="Consumer" EntitySet="Consumer" />
+            <End Role="Transaction" EntitySet="Transaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_EMI" Association="Self.FK_Transaction_EMI">
+            <End Role="EMI" EntitySet="EMI" />
+            <End Role="Transaction" EntitySet="Transaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_Product" Association="Self.FK_Transaction_Product">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Transaction" EntitySet="Transaction" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FinanceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Admin">
+          <Key>
+            <PropertyRef Name="AdminName" />
+          </Key>
+          <Property Name="AdminName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Bank">
+          <Key>
+            <PropertyRef Name="IFSC" />
+          </Key>
+          <Property Name="BankName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IFSC" Type="String" MaxLength="11" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Consumers" Relationship="Self.FK_Consumer_Bank" FromRole="Bank" ToRole="Consumer" />
+        </EntityType>
+        <EntityType Name="Card">
+          <Key>
+            <PropertyRef Name="CardTypeNo" />
+          </Key>
+          <Property Name="CardTypeNo" Type="String" MaxLength="16" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CardType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="JoiningFee" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <NavigationProperty Name="CompanyCards" Relationship="Self.FK_CompanyCard_Card" FromRole="Card" ToRole="CompanyCard" />
+          <NavigationProperty Name="Consumers" Relationship="Self.FK_Consumer_Card" FromRole="Card" ToRole="Consumer" />
+        </EntityType>
+        <EntityType Name="CompanyCard">
+          <Key>
+            <PropertyRef Name="CardNumber" />
+          </Key>
+          <Property Name="CardNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Validity" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CardTypeNo" Type="String" MaxLength="16" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Balance" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Card" Relationship="Self.FK_CompanyCard_Card" FromRole="CompanyCard" ToRole="Card" />
+          <NavigationProperty Name="Consumer" Relationship="Self.FK_CompanyCard_Consumer" FromRole="CompanyCard" ToRole="Consumer" />
+        </EntityType>
+        <EntityType Name="Consumer">
+          <Key>
+            <PropertyRef Name="UserName" />
+          </Key>
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="AccountNo" Type="String" MaxLength="18" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IFSC" Type="String" MaxLength="11" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CardTypeNo" Type="String" MaxLength="16" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ApplicationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="IsPending" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Bank" Relationship="Self.FK_Consumer_Bank" FromRole="Consumer" ToRole="Bank" />
+          <NavigationProperty Name="Card" Relationship="Self.FK_Consumer_Card" FromRole="Consumer" ToRole="Card" />
+          <NavigationProperty Name="CompanyCards" Relationship="Self.FK_CompanyCard_Consumer" FromRole="Consumer" ToRole="CompanyCard" />
+          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Consumer" FromRole="Consumer" ToRole="Transaction" />
+        </EntityType>
+        <EntityType Name="EMI">
+          <Key>
+            <PropertyRef Name="SchemeNo" />
+          </Key>
+          <Property Name="SchemeNo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Months" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_EMI" FromRole="EMI" ToRole="Transaction" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductID" />
+          </Key>
+          <Property Name="ProductID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProductDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ProductCost" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="ProductAvailability" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Product" FromRole="Product" ToRole="Transaction" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Transaction">
+          <Key>
+            <PropertyRef Name="TransactionID" />
+          </Key>
+          <Property Name="TransactionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="SchemeNo" Type="Int32" Nullable="false" />
+          <Property Name="PurchaseDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="RemainingAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="EMIAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <NavigationProperty Name="Consumer" Relationship="Self.FK_Transaction_Consumer" FromRole="Transaction" ToRole="Consumer" />
+          <NavigationProperty Name="EMI" Relationship="Self.FK_Transaction_EMI" FromRole="Transaction" ToRole="EMI" />
+          <NavigationProperty Name="Product" Relationship="Self.FK_Transaction_Product" FromRole="Transaction" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK_Consumer_Bank">
+          <End Role="Bank" Type="Self.Bank" Multiplicity="1" />
+          <End Role="Consumer" Type="Self.Consumer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bank">
+              <PropertyRef Name="IFSC" />
+            </Principal>
+            <Dependent Role="Consumer">
+              <PropertyRef Name="IFSC" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CompanyCard_Card">
+          <End Role="Card" Type="Self.Card" Multiplicity="1" />
+          <End Role="CompanyCard" Type="Self.CompanyCard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Card">
+              <PropertyRef Name="CardTypeNo" />
+            </Principal>
+            <Dependent Role="CompanyCard">
+              <PropertyRef Name="CardTypeNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Consumer_Card">
+          <End Role="Card" Type="Self.Card" Multiplicity="1" />
+          <End Role="Consumer" Type="Self.Consumer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Card">
+              <PropertyRef Name="CardTypeNo" />
+            </Principal>
+            <Dependent Role="Consumer">
+              <PropertyRef Name="CardTypeNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CompanyCard_Consumer">
+          <End Role="Consumer" Type="Self.Consumer" Multiplicity="1" />
+          <End Role="CompanyCard" Type="Self.CompanyCard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consumer">
+              <PropertyRef Name="UserName" />
+            </Principal>
+            <Dependent Role="CompanyCard">
+              <PropertyRef Name="UserName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_Consumer">
+          <End Role="Consumer" Type="Self.Consumer" Multiplicity="1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consumer">
+              <PropertyRef Name="UserName" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="UserName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_EMI">
+          <End Role="EMI" Type="Self.EMI" Multiplicity="1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMI">
+              <PropertyRef Name="SchemeNo" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="SchemeNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="FinanceEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Admins" EntityType="Self.Admin" />
+          <EntitySet Name="Banks" EntityType="Self.Bank" />
+          <EntitySet Name="Cards" EntityType="Self.Card" />
+          <EntitySet Name="CompanyCards" EntityType="Self.CompanyCard" />
+          <EntitySet Name="Consumers" EntityType="Self.Consumer" />
+          <EntitySet Name="EMIs" EntityType="Self.EMI" />
+          <EntitySet Name="Products" EntityType="Self.Product" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="Transactions" EntityType="Self.Transaction" />
+          <AssociationSet Name="FK_Consumer_Bank" Association="Self.FK_Consumer_Bank">
+            <End Role="Bank" EntitySet="Banks" />
+            <End Role="Consumer" EntitySet="Consumers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CompanyCard_Card" Association="Self.FK_CompanyCard_Card">
+            <End Role="Card" EntitySet="Cards" />
+            <End Role="CompanyCard" EntitySet="CompanyCards" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Consumer_Card" Association="Self.FK_Consumer_Card">
+            <End Role="Card" EntitySet="Cards" />
+            <End Role="Consumer" EntitySet="Consumers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CompanyCard_Consumer" Association="Self.FK_CompanyCard_Consumer">
+            <End Role="Consumer" EntitySet="Consumers" />
+            <End Role="CompanyCard" EntitySet="CompanyCards" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_Consumer" Association="Self.FK_Transaction_Consumer">
+            <End Role="Consumer" EntitySet="Consumers" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_EMI" Association="Self.FK_Transaction_EMI">
+            <End Role="EMI" EntitySet="EMIs" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_Product" Association="Self.FK_Transaction_Product">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FinanceModelStoreContainer" CdmEntityContainer="FinanceEntities">
+          <EntitySetMapping Name="Admins">
+            <EntityTypeMapping TypeName="FinanceModel.Admin">
+              <MappingFragment StoreEntitySet="Admin">
+                <ScalarProperty Name="AdminName" ColumnName="AdminName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Banks">
+            <EntityTypeMapping TypeName="FinanceModel.Bank">
+              <MappingFragment StoreEntitySet="Bank">
+                <ScalarProperty Name="BankName" ColumnName="BankName" />
+                <ScalarProperty Name="IFSC" ColumnName="IFSC" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Cards">
+            <EntityTypeMapping TypeName="FinanceModel.Card">
+              <MappingFragment StoreEntitySet="Card">
+                <ScalarProperty Name="CardTypeNo" ColumnName="CardTypeNo" />
+                <ScalarProperty Name="CardType" ColumnName="CardType" />
+                <ScalarProperty Name="JoiningFee" ColumnName="JoiningFee" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CompanyCards">
+            <EntityTypeMapping TypeName="FinanceModel.CompanyCard">
+              <MappingFragment StoreEntitySet="CompanyCard">
+                <ScalarProperty Name="CardNumber" ColumnName="CardNumber" />
+                <ScalarProperty Name="Validity" ColumnName="Validity" />
+                <ScalarProperty Name="CardTypeNo" ColumnName="CardTypeNo" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Consumers">
+            <EntityTypeMapping TypeName="FinanceModel.Consumer">
+              <MappingFragment StoreEntitySet="Consumer">
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+                <ScalarProperty Name="IFSC" ColumnName="IFSC" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="CardTypeNo" ColumnName="CardTypeNo" />
+                <ScalarProperty Name="ApplicationDate" ColumnName="ApplicationDate" />
+                <ScalarProperty Name="IsPending" ColumnName="IsPending" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMIs">
+            <EntityTypeMapping TypeName="FinanceModel.EMI">
+              <MappingFragment StoreEntitySet="EMI">
+                <ScalarProperty Name="SchemeNo" ColumnName="SchemeNo" />
+                <ScalarProperty Name="Months" ColumnName="Months" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="FinanceModel.Product">
+              <MappingFragment StoreEntitySet="Product">
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="ProductDetails" ColumnName="ProductDetails" />
+                <ScalarProperty Name="ProductCost" ColumnName="ProductCost" />
+                <ScalarProperty Name="ProductAvailability" ColumnName="ProductAvailability" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="FinanceModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Transactions">
+            <EntityTypeMapping TypeName="FinanceModel.Transaction">
+              <MappingFragment StoreEntitySet="Transaction">
+                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="SchemeNo" ColumnName="SchemeNo" />
+                <ScalarProperty Name="PurchaseDate" ColumnName="PurchaseDate" />
+                <ScalarProperty Name="RemainingAmount" ColumnName="RemainingAmount" />
+                <ScalarProperty Name="EMIAmount" ColumnName="EMIAmount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
