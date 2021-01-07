@@ -5,15 +5,16 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
-using FinanceWebApi.Model;
+
+using FinanceWebApi.Models;
 
 namespace FinanceWebApi.Controllers
 {
-    [EnableCors(origins:"*",headers:"*",methods:"*")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class LoginController : ApiController
     {
-        FinanceEntities db = new FinanceEntities();
-            
+        readonly FinanceEntities db = new FinanceEntities();
+
         [HttpPost]
         public HttpResponseMessage GetUser(Login log)
         {
@@ -21,9 +22,7 @@ namespace FinanceWebApi.Controllers
             if (display != null)
             {
                 return Request.CreateResponse(HttpStatusCode.Accepted, "Login Successfully");
-            }
-            
-            else
+            } else
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "Invalid Username or Password");
             }
@@ -35,9 +34,7 @@ namespace FinanceWebApi.Controllers
             if (display != null)
             {
                 return Request.CreateResponse(HttpStatusCode.Accepted, "Admin Login Successfully");
-            }
-
-            else
+            } else
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "Invalid Name or Password");
             }
