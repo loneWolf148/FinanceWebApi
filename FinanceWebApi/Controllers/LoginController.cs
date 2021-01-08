@@ -16,7 +16,7 @@ namespace FinanceWebApi.Controllers
         readonly FinanceEntities db = new FinanceEntities();
 
         [HttpPost]
-        public HttpResponseMessage GetUser(Login log)
+        public HttpResponseMessage GetUser([FromBody] Login log)
         {
             var display = db.Consumers.Where(m => m.UserName == log.UserName && m.Password == log.Password).FirstOrDefault();
             if (display != null)
@@ -28,7 +28,7 @@ namespace FinanceWebApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage GetAdmin(Login log)
+        public HttpResponseMessage GetAdmin([FromBody] Login log)
         {
             var display = db.Admins.Where(m => m.AdminName == log.UserName && m.Password == log.Password).FirstOrDefault();
             if (display != null)
