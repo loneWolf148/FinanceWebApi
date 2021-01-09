@@ -21,6 +21,7 @@ namespace FinanceWebApi.Models
         public System.DateTime PurchaseDate { get; set; }
         public decimal RemainingAmount { get; set; }
         public decimal EMIAmount { get; set; }
+        public System.DateTime LastChecked { get; set; }
 
         public Consumer Consumer { get; set; }
         public EMI EMI { get; set; }

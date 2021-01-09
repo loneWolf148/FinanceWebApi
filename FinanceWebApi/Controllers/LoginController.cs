@@ -16,28 +16,100 @@ namespace FinanceWebApi.Controllers
         readonly FinanceEntities db = new FinanceEntities();
 
         [HttpPost]
-        public HttpResponseMessage GetUser([FromBody] Login log)
+        public HttpResponseMessage LoginConsumer([FromBody] Login log)
         {
-            var display = db.Consumers.Where(m => m.UserName == log.UserName && m.Password == log.Password).FirstOrDefault();
-            if (display != null)
+            try
             {
-                return Request.CreateResponse(HttpStatusCode.Accepted, "Login Successfully");
-            } else
+                Consumer consumer = db.Consumers.Where(c => c.UserName == log.UserName && c.Password == log.Password).FirstOrDefault();
+                if (consumer == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Username Or Password Incorrect");
+                }
+                if (consumer.IsPending)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "User Not Yet Verified");
+                }
+                if (consumer.IsOpen == false)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Account Closed");
+                }
+                return Request.CreateResponse(HttpStatusCode.Accepted, "Logged In Successfully");
+            } catch
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Invalid Username or Password");
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "User Could Not be Logged In");
             }
         }
+
         [HttpPost]
-        public HttpResponseMessage GetAdmin([FromBody] Login log)
+        public HttpResponseMessage LoginAdmin([FromBody] Login log)
         {
-            var display = db.Admins.Where(m => m.AdminName == log.UserName && m.Password == log.Password).FirstOrDefault();
-            if (display != null)
+            try
             {
-                return Request.CreateResponse(HttpStatusCode.Accepted, "Admin Login Successfully");
-            } else
+                Admin admin = db.Admins.Where(a => a.AdminName == log.UserName && a.Password == log.Password).FirstOrDefault();
+                if (admin == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Admin Name Or Password Incorrect");
+                }
+                return Request.CreateResponse(HttpStatusCode.Accepted, "Admin Logged In Successfully");
+            } catch
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Invalid Name or Password");
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Admin Could Not Be Logged In");
             }
+        }
+
+        [HttpPut]
+        public HttpResponseMessage ChangePassword(string id, [FromBody] Password updatePassword)
+        {
+            try
+            {
+                Consumer consumer = db.Consumers.Find(id);
+                if (consumer == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "User Does Not Exist");
+                }
+                if (consumer.Password != updatePassword.OldPassword)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Wrong Old Password");
+                }
+                consumer.Password = updatePassword.NewPassword;
+                db.SaveChanges();
+
+                return Request.CreateResponse(HttpStatusCode.Accepted, "Password Updated Successfully");
+            } catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Password Could Not Be Changed");
+            }
+        }
+
+        [HttpGet]
+        public HttpResponseMessage ForgotPassword(string id, string email)
+        {
+            try
+            {
+                Consumer existingConsumer = db.Consumers.Where(c => c.UserName == id && c.Email == email).FirstOrDefault();
+                if (existingConsumer == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Username or Email Incorrect");
+                }
+                if (existingConsumer.IsOpen == false)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Your Account Is Closed");
+                }
+                return Request.CreateResponse(HttpStatusCode.Accepted, $"Your Password is {existingConsumer.Password}");
+            } catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Password Could Not Be Fetched");
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }
+

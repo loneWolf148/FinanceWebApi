@@ -24,6 +24,7 @@ namespace FinanceWebApi.Models
         public string CardTypeNo { get; set; }
         public string CardType { get; set; }
         public decimal JoiningFee { get; set; }
+        public decimal CardLimit { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ICollection<CompanyCard> CompanyCards { get; set; }

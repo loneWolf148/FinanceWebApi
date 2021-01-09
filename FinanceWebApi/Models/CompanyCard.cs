@@ -19,6 +19,7 @@ namespace FinanceWebApi.Models
         public string CardTypeNo { get; set; }
         public decimal Balance { get; set; }
         public string UserName { get; set; }
+        public bool IsOpen { get; set; }
 
         public Card Card { get; set; }
         public Consumer Consumer { get; set; }

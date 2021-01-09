@@ -32,6 +32,8 @@ namespace FinanceWebApi.Models
         public string CardTypeNo { get; set; }
         public System.DateTime ApplicationDate { get; set; }
         public bool IsPending { get; set; }
+        public System.DateTime DateOfBirth { get; set; }
+        public bool IsOpen { get; set; }
 
         public Bank Bank { get; set; }
         public Card Card { get; set; }
