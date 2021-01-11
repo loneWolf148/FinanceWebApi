@@ -57,6 +57,16 @@
           <Property Name="DateOfBirth" Type="datetime" Nullable="false" />
           <Property Name="IsOpen" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="Deductions">
+          <Key>
+            <PropertyRef Name="DeductionID" />
+          </Key>
+          <Property Name="DeductionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="50" />
+          <Property Name="ProductID" Type="int" />
+          <Property Name="DeductionDate" Type="datetime" Nullable="false" />
+          <Property Name="EMIAmout" Type="money" Nullable="false" />
+        </EntityType>
         <EntityType Name="EMI">
           <Key>
             <PropertyRef Name="SchemeNo" />
@@ -97,6 +107,30 @@
           <Property Name="EMIAmount" Type="money" Nullable="false" />
           <Property Name="LastChecked" Type="datetime" Nullable="false" />
         </EntityType>
+        <Association Name="FK__Deduction__Produ__7A3223E8">
+          <End Role="Product" Type="Self.Product" Multiplicity="0..1" />
+          <End Role="Deductions" Type="Self.Deductions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="Deductions">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Deduction__UserN__793DFFAF">
+          <End Role="Consumer" Type="Self.Consumer" Multiplicity="0..1" />
+          <End Role="Deductions" Type="Self.Deductions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consumer">
+              <PropertyRef Name="UserName" />
+            </Principal>
+            <Dependent Role="Deductions">
+              <PropertyRef Name="UserName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CompanyCard_Card">
           <End Role="Card" Type="Self.Card" Multiplicity="1" />
           <End Role="CompanyCard" Type="Self.CompanyCard" Multiplicity="*" />
@@ -218,10 +252,19 @@
           <EntitySet Name="Card" EntityType="Self.Card" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CompanyCard" EntityType="Self.CompanyCard" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Consumer" EntityType="Self.Consumer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Deductions" EntityType="Self.Deductions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EMI" EntityType="Self.EMI" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Deduction__Produ__7A3223E8" Association="Self.FK__Deduction__Produ__7A3223E8">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Deductions" EntitySet="Deductions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Deduction__UserN__793DFFAF" Association="Self.FK__Deduction__UserN__793DFFAF">
+            <End Role="Consumer" EntitySet="Consumer" />
+            <End Role="Deductions" EntitySet="Deductions" />
+          </AssociationSet>
           <AssociationSet Name="FK_CompanyCard_Card" Association="Self.FK_CompanyCard_Card">
             <End Role="Card" EntitySet="Card" />
             <End Role="CompanyCard" EntitySet="CompanyCard" />
@@ -315,7 +358,8 @@
           <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Consumer" FromRole="Consumer" ToRole="Transaction" />
           <Property Name="DateOfBirth" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsOpen" Type="Boolean" Nullable="false" />
-        </EntityType>
+          <NavigationProperty Name="Deductions" Relationship="FinanceModel.FK__Deduction__UserN__793DFFAF" FromRole="Consumer" ToRole="Deduction" />
+          </EntityType>
         <EntityType Name="EMI">
           <Key>
             <PropertyRef Name="SchemeNo" />
@@ -334,6 +378,7 @@
           <Property Name="ProductCost" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="ProductAvailability" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Product" FromRole="Product" ToRole="Transaction" />
+          <NavigationProperty Name="Deductions" Relationship="FinanceModel.FK__Deduction__Produ__7A3223E8" FromRole="Product" ToRole="Deduction" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -513,8 +558,53 @@
             <Parameter Name="new_diagramname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
-        </EntityContainer>
-      </Schema>
+          <EntitySet Name="Deductions" EntityType="FinanceModel.Deduction" />
+          <AssociationSet Name="FK__Deduction__UserN__793DFFAF" Association="FinanceModel.FK__Deduction__UserN__793DFFAF">
+            <End Role="Consumer" EntitySet="Consumers" />
+            <End Role="Deduction" EntitySet="Deductions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Deduction__Produ__7A3223E8" Association="FinanceModel.FK__Deduction__Produ__7A3223E8">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Deduction" EntitySet="Deductions" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="Deduction">
+          <Key>
+            <PropertyRef Name="DeductionID" />
+          </Key>
+          <Property Name="DeductionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ProductID" Type="Int32" />
+          <Property Name="DeductionDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EMIAmout" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <NavigationProperty Name="Consumer" Relationship="FinanceModel.FK__Deduction__UserN__793DFFAF" FromRole="Deduction" ToRole="Consumer" />
+          <NavigationProperty Name="Product" Relationship="FinanceModel.FK__Deduction__Produ__7A3223E8" FromRole="Deduction" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK__Deduction__UserN__793DFFAF">
+          <End Type="FinanceModel.Consumer" Role="Consumer" Multiplicity="0..1" />
+          <End Type="FinanceModel.Deduction" Role="Deduction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consumer">
+              <PropertyRef Name="UserName" />
+            </Principal>
+            <Dependent Role="Deduction">
+              <PropertyRef Name="UserName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Deduction__Produ__7A3223E8">
+          <End Type="FinanceModel.Product" Role="Product" Multiplicity="0..1" />
+          <End Type="FinanceModel.Deduction" Role="Deduction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="Deduction">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -628,6 +718,17 @@
           <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="FinanceModel.Store.sp_helpdiagrams" />
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="FinanceModel.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="FinanceModel.Store.sp_upgraddiagrams" />
+          <EntitySetMapping Name="Deductions">
+            <EntityTypeMapping TypeName="FinanceModel.Deduction">
+              <MappingFragment StoreEntitySet="Deductions">
+                <ScalarProperty Name="EMIAmout" ColumnName="EMIAmout" />
+                <ScalarProperty Name="DeductionDate" ColumnName="DeductionDate" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="DeductionID" ColumnName="DeductionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

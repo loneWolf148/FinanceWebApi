@@ -21,7 +21,10 @@
         <AssociationConnector Association="FinanceModel.FK_Transaction_Consumer" ManuallyRouted="false" />
         <AssociationConnector Association="FinanceModel.FK_Transaction_EMI" ManuallyRouted="false" />
         <AssociationConnector Association="FinanceModel.FK_Transaction_Product" ManuallyRouted="false" />
-      </Diagram>
+        <EntityTypeShape EntityType="FinanceModel.Deduction" Width="1.5" PointX="9.75" PointY="0.5" />
+        <AssociationConnector Association="FinanceModel.FK__Deduction__UserN__793DFFAF" />
+        <AssociationConnector Association="FinanceModel.FK__Deduction__Produ__7A3223E8" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

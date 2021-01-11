@@ -160,6 +160,15 @@ namespace FinanceWebApi.Controllers
 
                         var currentBalance = tranCard.Balance - tran.EMIAmount;
                         tranCard.Balance = currentBalance;
+
+                        Deduction newDeduction = new Deduction()
+                        {
+                            UserName = tran.UserName,
+                            ProductID = tran.ProductID,
+                            DeductionDate = DateTime.Now,
+                            EMIAmout = tran.EMIAmount
+                        };
+                        financeEntities.Entry(newDeduction).State = System.Data.Entity.EntityState.Added;
                     }
                     tran.LastChecked = DateTime.Now;
                 }

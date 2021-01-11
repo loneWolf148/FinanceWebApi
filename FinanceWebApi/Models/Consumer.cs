@@ -19,6 +19,7 @@ namespace FinanceWebApi.Models
         {
             this.CompanyCards = new HashSet<CompanyCard>();
             this.Transactions = new HashSet<Transaction>();
+            this.Deductions = new HashSet<Deduction>();
         }
 
         public string UserName { get; set; }
@@ -41,5 +42,7 @@ namespace FinanceWebApi.Models
         public ICollection<CompanyCard> CompanyCards { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ICollection<Transaction> Transactions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public ICollection<Deduction> Deductions { get; set; }
     }
 }
