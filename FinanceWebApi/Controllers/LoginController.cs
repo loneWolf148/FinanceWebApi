@@ -33,7 +33,7 @@ namespace FinanceWebApi.Controllers
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Account Closed");
                 }
-                return Request.CreateResponse(HttpStatusCode.Accepted, "Logged In Successfully");
+                return Request.CreateResponse(HttpStatusCode.Accepted, new { consumer.UserName, consumer.Name, consumer.Password });
             } catch
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "User Could Not be Logged In");
