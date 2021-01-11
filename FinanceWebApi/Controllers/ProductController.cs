@@ -138,6 +138,15 @@ namespace FinanceWebApi.Controllers
                 var currentBalance = companyCard.Balance - emiCost;
                 companyCard.Balance = currentBalance;
 
+                Deduction newAmountDeduction = new Deduction()
+                {
+                    UserName = consumer.UserName,
+                    DeductionDate = DateTime.Now,
+                    EMIAmout = emiCost,
+                    ProductID = selectedProduct.ProductID
+                };
+                financeEntities.Entry(newAmountDeduction).State = System.Data.Entity.EntityState.Added;
+
                 financeEntities.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.Created, "Order Placed Successfully");
             } catch
