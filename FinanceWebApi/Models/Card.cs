@@ -11,7 +11,7 @@ namespace FinanceWebApi.Models
 {
     using System;
     using System.Collections.Generic;
-
+    
     public partial class Card
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -20,15 +20,15 @@ namespace FinanceWebApi.Models
             this.CompanyCards = new HashSet<CompanyCard>();
             this.Consumers = new HashSet<Consumer>();
         }
-
+    
         public string CardTypeNo { get; set; }
         public string CardType { get; set; }
         public decimal JoiningFee { get; set; }
         public decimal CardLimit { get; set; }
-
+    
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public ICollection<CompanyCard> CompanyCards { get; set; }
+        public virtual ICollection<CompanyCard> CompanyCards { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public ICollection<Consumer> Consumers { get; set; }
+        public virtual ICollection<Consumer> Consumers { get; set; }
     }
 }

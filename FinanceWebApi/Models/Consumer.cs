@@ -11,16 +11,17 @@ namespace FinanceWebApi.Models
 {
     using System;
     using System.Collections.Generic;
-
+    
     public partial class Consumer
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Consumer()
         {
             this.CompanyCards = new HashSet<CompanyCard>();
+            this.Deductions = new HashSet<Deduction>();
             this.Transactions = new HashSet<Transaction>();
         }
-
+    
         public string UserName { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
@@ -34,12 +35,14 @@ namespace FinanceWebApi.Models
         public bool IsPending { get; set; }
         public System.DateTime DateOfBirth { get; set; }
         public bool IsOpen { get; set; }
-
-        public Bank Bank { get; set; }
-        public Card Card { get; set; }
+    
+        public virtual Bank Bank { get; set; }
+        public virtual Card Card { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public ICollection<CompanyCard> CompanyCards { get; set; }
+        public virtual ICollection<CompanyCard> CompanyCards { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<Deduction> Deductions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

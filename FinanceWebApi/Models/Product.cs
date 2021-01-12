@@ -11,22 +11,25 @@ namespace FinanceWebApi.Models
 {
     using System;
     using System.Collections.Generic;
-
+    
     public partial class Product
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Product()
         {
+            this.Deductions = new HashSet<Deduction>();
             this.Transactions = new HashSet<Transaction>();
         }
-
+    
         public int ProductID { get; set; }
         public string ProductName { get; set; }
         public string ProductDetails { get; set; }
         public decimal ProductCost { get; set; }
         public bool ProductAvailability { get; set; }
-
+    
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<Deduction> Deductions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

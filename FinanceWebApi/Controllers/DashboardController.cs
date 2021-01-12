@@ -25,12 +25,14 @@ namespace FinanceWebApi.Controllers
                                   join z in financeEntities.Consumers on x.UserName equals z.UserName
                                   select
                                   new
-                                  { x.CardNumber, z.Name, x.Validity, y.CardType, Activated = DateTime.Compare(x.Validity, DateTime.Now) >= 0 };
+                                  { CardNumber=x.CardNumber, Name=z.Name, Validity=x.Validity, CardType=y.CardType, Activated = DateTime.Compare(x.Validity, DateTime.Now) >= 0 };
+                var user = cardDetails.FirstOrDefault();
+
                 if (cardDetails == null || cardDetails.Count() == 0)
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "Consumer Card Details Could Not Be Fetched");
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, cardDetails);
+                return Request.CreateResponse(HttpStatusCode.OK, user);
             } catch
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Something Went Wrong");
@@ -58,7 +60,7 @@ namespace FinanceWebApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, creditDetails);
             } catch
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Card Details Could Not Be Fetched");
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Something Went Wrong");
             }
         }
 
@@ -73,9 +75,9 @@ namespace FinanceWebApi.Controllers
                                         on a.ProductID equals c.ProductID
                                         select new
                                         {
-                                            c.ProductName,
-                                            a.PurchaseDate,
-                                            OrderAmount = a.EMIAmount * a.EMI.Months,
+                                            ProductName=c.ProductName,
+                                            PurchaseDate=a.PurchaseDate,
+                                            ProductCost = a.EMIAmount * a.EMI.Months,
                                             AmountPaid = (a.EMIAmount * a.EMI.Months) - a.RemainingAmount
                                         };
                 if (purchasedProducts == null)
@@ -83,11 +85,43 @@ namespace FinanceWebApi.Controllers
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "Purchased Products Could Not Be Fetched");
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, purchasedProducts);
-            } catch
+            } 
+            catch
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Something Went Wrong");
             }
         }
+
+        [HttpGet]
+        public HttpResponseMessage GetRecentTransactions(string id)
+        {
+            try
+            {
+                var transaction = from a in financeEntities.Deductions
+                                  where a.UserName == id
+                                  join b in financeEntities.Products on a.ProductID equals b.ProductID
+                                  select new
+                                  {
+                                      ProductID=a.ProductID,
+                                      ProductName=b.ProductName,
+                                      DeductionDate=a.DeductionDate,
+                                      EMIAmount = a.EMIAmount
+                                    };
+            
+            if (transaction == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Transaction History Could Not Be Fetched");
+            }
+            return Request.CreateResponse(HttpStatusCode.OK, transaction);
+
+            }
+            catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Something Went Wrong");
+
+            }
+        }
+
 
         protected override void Dispose(bool disposing)
         {

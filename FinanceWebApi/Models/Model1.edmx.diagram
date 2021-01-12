@@ -13,15 +13,18 @@
         <EntityTypeShape EntityType="FinanceModel.EMI" Width="1.5" PointX="4.875" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="FinanceModel.Product" Width="1.5" PointX="8.625" PointY="4.625" IsExpanded="true" />
         <EntityTypeShape EntityType="FinanceModel.sysdiagram" Width="1.5" PointX="6.75" PointY="5" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinanceModel.Transaction" Width="1.5" PointX="7.125" PointY="1.25" IsExpanded="true" />
         <AssociationConnector Association="FinanceModel.FK_Consumer_Bank" ManuallyRouted="false" />
         <AssociationConnector Association="FinanceModel.FK_CompanyCard_Card" ManuallyRouted="false" />
         <AssociationConnector Association="FinanceModel.FK_Consumer_Card" ManuallyRouted="false" />
         <AssociationConnector Association="FinanceModel.FK_CompanyCard_Consumer" ManuallyRouted="false" />
-        <AssociationConnector Association="FinanceModel.FK_Transaction_Consumer" ManuallyRouted="false" />
-        <AssociationConnector Association="FinanceModel.FK_Transaction_EMI" ManuallyRouted="false" />
-        <AssociationConnector Association="FinanceModel.FK_Transaction_Product" ManuallyRouted="false" />
-      </Diagram>
+        <EntityTypeShape EntityType="FinanceModel.Deduction" Width="1.5" PointX="10.875" PointY="3.625" />
+        <AssociationConnector Association="FinanceModel.FK__Deduction__UserN__0880433F" />
+        <AssociationConnector Association="FinanceModel.FK__Deduction__Produ__09746778" />
+        <EntityTypeShape EntityType="FinanceModel.Transaction" Width="1.5" PointX="10.875" PointY="0.75" />
+        <AssociationConnector Association="FinanceModel.FK_Transaction_Consumer" />
+        <AssociationConnector Association="FinanceModel.FK_Transaction_EMI" />
+        <AssociationConnector Association="FinanceModel.FK_Transaction_Product" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

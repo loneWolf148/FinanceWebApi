@@ -12,16 +12,15 @@ namespace FinanceWebApi.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CompanyCard
+    public partial class Deduction
     {
-        public string CardNumber { get; set; }
-        public System.DateTime Validity { get; set; }
-        public string CardTypeNo { get; set; }
-        public decimal Balance { get; set; }
+        public int DeductionID { get; set; }
         public string UserName { get; set; }
-        public bool IsOpen { get; set; }
+        public Nullable<int> ProductID { get; set; }
+        public System.DateTime DeductionDate { get; set; }
+        public decimal EMIAmount { get; set; }
     
-        public virtual Card Card { get; set; }
         public virtual Consumer Consumer { get; set; }
+        public virtual Product Product { get; set; }
     }
 }

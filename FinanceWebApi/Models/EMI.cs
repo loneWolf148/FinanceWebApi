@@ -11,7 +11,7 @@ namespace FinanceWebApi.Models
 {
     using System;
     using System.Collections.Generic;
-
+    
     public partial class EMI
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -19,11 +19,11 @@ namespace FinanceWebApi.Models
         {
             this.Transactions = new HashSet<Transaction>();
         }
-
+    
         public int SchemeNo { get; set; }
         public int Months { get; set; }
-
+    
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace FinanceWebApi.Models
 {
     using System;
     using System.Collections.Generic;
-
+    
     public partial class Bank
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -19,11 +19,11 @@ namespace FinanceWebApi.Models
         {
             this.Consumers = new HashSet<Consumer>();
         }
-
+    
         public string BankName { get; set; }
         public string IFSC { get; set; }
-
+    
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public ICollection<Consumer> Consumers { get; set; }
+        public virtual ICollection<Consumer> Consumers { get; set; }
     }
 }
