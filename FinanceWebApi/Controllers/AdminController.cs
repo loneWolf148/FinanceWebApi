@@ -20,7 +20,7 @@ namespace FinanceWebApi.Controllers
             try
             {
                 var data = from x in financeEntities.Consumers
-                           where x.IsPending == true
+                           where x.IsPending == true && x.IsOpen == false
                            select new
                            { x.UserName, x.Name, x.PhoneNumber, x.Email, x.Address };
                 return Request.CreateResponse(HttpStatusCode.OK, data);
@@ -36,12 +36,36 @@ namespace FinanceWebApi.Controllers
             try
             {
                 var data = from x in financeEntities.Consumers
-                           where x.IsPending == false
+                           where x.IsPending == false && x.IsOpen == true
                            select new { x.UserName, x.Name, x.PhoneNumber, x.Email, x.Address };
                 return Request.CreateResponse(HttpStatusCode.OK, data);
             } catch
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Verified Consumers Could Not Be Displayed");
+            }
+        }
+
+        [HttpGet]
+        public HttpResponseMessage GetConsumer(string id)
+        {
+            try
+            {
+                var consumer = financeEntities.Consumers.Find(id);
+                if (consumer == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No Consumer Found");
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    consumer.UserName,
+                    consumer.Email,
+                    consumer.PhoneNumber,
+                    consumer.Name,
+                    consumer.Address
+                });
+            } catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Consumer Could Not Be Retrieved");
             }
         }
 
@@ -56,6 +80,11 @@ namespace FinanceWebApi.Controllers
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "Consumer Not Found");
                 } else
                 {
+                    if (oldConsumer.IsOpen == false)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.Forbidden, "Consumer Account Closed");
+                    }
+
                     oldConsumer.Name = updatedConsumer.Name;
                     oldConsumer.PhoneNumber = updatedConsumer.PhoneNumber;
                     oldConsumer.Address = updatedConsumer.Address;
@@ -79,6 +108,11 @@ namespace FinanceWebApi.Controllers
                 if (existingConsumer == null)
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Consumer Not Found");
+                }
+
+                if (existingConsumer.IsOpen == false)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.Forbidden, "Consumer Account Closed");
                 }
 
                 CompanyCard consumerCard = financeEntities.CompanyCards.Where(c => c.UserName == id).FirstOrDefault();

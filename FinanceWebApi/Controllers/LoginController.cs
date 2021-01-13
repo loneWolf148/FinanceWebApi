@@ -50,7 +50,7 @@ namespace FinanceWebApi.Controllers
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Admin Name Or Password Incorrect");
                 }
-                return Request.CreateResponse(HttpStatusCode.Accepted, "Admin Logged In Successfully");
+                return Request.CreateResponse(HttpStatusCode.Accepted, new { UserName = admin.AdminName, Name = admin.AdminName, admin.Password });
             } catch
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Admin Could Not Be Logged In");

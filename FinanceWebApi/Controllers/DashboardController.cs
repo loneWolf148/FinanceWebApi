@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using FinanceWebApi.Models;
 using System.Web.Http.Cors;
+using System.Data.Entity;
 
 namespace FinanceWebApi.Controllers
 {
@@ -19,14 +20,22 @@ namespace FinanceWebApi.Controllers
         {
             try
             {
-                var cardDetails = from x in financeEntities.CompanyCards
-                                  where x.UserName == id
-                                  join y in financeEntities.Cards on x.CardTypeNo equals y.CardTypeNo
-                                  join z in financeEntities.Consumers on x.UserName equals z.UserName
-                                  select
-                                  new
-                                  { x.CardNumber, z.Name, x.Validity, y.CardType, Activated = DateTime.Compare(x.Validity, DateTime.Now) >= 0 };
-                if (cardDetails == null || cardDetails.Count() == 0)
+                var cardDetails = (from x in financeEntities.CompanyCards
+                                   where x.UserName == id
+                                   join y in financeEntities.Cards on x.CardTypeNo equals y.CardTypeNo
+                                   join z in financeEntities.Consumers on x.UserName equals z.UserName
+                                   select
+                                   new
+                                   {
+                                       x.CardNumber,
+                                       z.Name,
+                                       x.Validity,
+                                       y.CardType,
+                                       Activated = DateTime.Compare(x.Validity, DateTime.Now) >= 0 && x.IsOpen
+                                   })
+                                       .FirstOrDefault();
+
+                if (cardDetails == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "Consumer Card Details Could Not Be Fetched");
                 }
@@ -83,6 +92,23 @@ namespace FinanceWebApi.Controllers
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "Purchased Products Could Not Be Fetched");
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, purchasedProducts);
+            } catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Something Went Wrong");
+            }
+        }
+
+        [HttpGet]
+        public HttpResponseMessage GetRecentTransactions(string id)
+        {
+            try
+            {
+                var recentTransactions = from d in financeEntities.Deductions
+                                         where d.UserName == id && DbFunctions.DiffDays(DateTime.Now, d.DeductionDate) <= 30
+                                         join p in financeEntities.Products
+                                         on d.ProductID equals p.ProductID
+                                         select new { d.ProductID, p.ProductName, d.DeductionDate, EMIAmount = d.EMIAmout };
+                return Request.CreateResponse(HttpStatusCode.OK, recentTransactions);
             } catch
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Something Went Wrong");

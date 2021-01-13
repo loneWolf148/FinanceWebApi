@@ -76,6 +76,20 @@ namespace FinanceWebApi.Controllers
         }
 
         [HttpGet]
+        public HttpResponseMessage GetBanks()
+        {
+            try
+            {
+                var banks = from bank in db.Banks
+                            select new { bank.IFSC, bank.BankName };
+                return Request.CreateResponse(HttpStatusCode.OK, banks);
+            } catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Bank Details Could Not Be Fetched");
+            }
+        }
+
+        [HttpGet]
         public HttpResponseMessage CheckUserName(string id)
         {
             try
