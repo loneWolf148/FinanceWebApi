@@ -157,7 +157,7 @@ namespace FinanceWebApi.Controllers
 
         private int CalculateMonthlyEMI(Product product, int months)
         {
-            return Convert.ToInt32(product.ProductCost / months + product.ProductCost % months);
+            return Convert.ToInt32(Math.Ceiling(product.ProductCost / months));
         }
 
         protected override void Dispose(bool disposing)
